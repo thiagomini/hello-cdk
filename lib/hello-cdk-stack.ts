@@ -21,6 +21,8 @@ export class HelloCdkStack extends cdk.Stack {
   private buildS3Bucket(): void {
     new s3.Bucket(this, "MyFirstBucket", {
       versioned: true,
+      autoDeleteObjects: true,
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
     });
   }
 }

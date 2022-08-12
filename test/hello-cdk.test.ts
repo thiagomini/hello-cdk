@@ -23,9 +23,13 @@ test("S3 Bucket Created", () => {
   // THEN
   const template = Template.fromStack(stack);
 
-  template.hasResourceProperties("AWS::S3::Bucket", {
-    VersioningConfiguration: {
-      Status: "Enabled",
+  template.hasResource("AWS::S3::Bucket", {
+    DeletionPolicy: "Delete",
+    UpdateReplacePolicy: "Delete",
+    Properties: {
+      VersioningConfiguration: {
+        Status: "Enabled",
+      },
     },
   });
 });
