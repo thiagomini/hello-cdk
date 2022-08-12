@@ -5,11 +5,7 @@ import * as HelloCdk from "../lib/hello-cdk-stack";
 // example test. To run these tests, uncomment this file along with the
 // example resource in lib/hello-cdk-stack.ts
 test("SQS Queue Created", () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new HelloCdk.HelloCdkStack(app, "MyTestStack");
-  // THEN
-  const template = Template.fromStack(stack);
+  const template = createSut();
 
   template.hasResourceProperties("AWS::SQS::Queue", {
     VisibilityTimeout: 300,
@@ -17,11 +13,7 @@ test("SQS Queue Created", () => {
 });
 
 test("S3 Bucket Created", () => {
-  const app = new cdk.App();
-  // WHEN
-  const stack = new HelloCdk.HelloCdkStack(app, "MyTestStack");
-  // THEN
-  const template = Template.fromStack(stack);
+  const template = createSut();
 
   template.hasResource("AWS::S3::Bucket", {
     DeletionPolicy: "Delete",
@@ -33,3 +25,9 @@ test("S3 Bucket Created", () => {
     },
   });
 });
+
+const createSut = (): Template => {
+  const app = new cdk.App();
+  const stack = new HelloCdk.HelloCdkStack(app, "MyTestStack");
+  return Template.fromStack(stack);
+};
