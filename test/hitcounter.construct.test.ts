@@ -5,10 +5,14 @@ import { HitCounter } from "../lib/hitcounter.construct";
 import { AwsResources } from "./aws.resources";
 
 describe("HitCounterConstruct", () => {
-  it("should provide a DynamoDB Table", () => {
+  it("should provide a DynamoDB Table with Encryption", () => {
     const hitCounter = createSut();
 
-    hitCounter.resourceCountIs(AwsResources.DynamoDB.Table, 1);
+    hitCounter.hasResourceProperties(AwsResources.DynamoDB.Table, {
+      SSESpecification: {
+        SSEEnabled: true,
+      },
+    });
   });
 
   it("should provide a Lambda Function with correct ENV VARS", () => {
