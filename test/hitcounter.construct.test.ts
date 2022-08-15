@@ -1,5 +1,5 @@
 import * as cdk from "aws-cdk-lib";
-import { Capture, Template } from "aws-cdk-lib/assertions";
+import { Capture, Match, Template } from "aws-cdk-lib/assertions";
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import { HitCounter } from "../lib/hitcounter.construct";
 import { AwsResources } from "./aws.resources";
@@ -13,6 +13,25 @@ describe("HitCounterConstruct", () => {
         SSEEnabled: true,
       },
     });
+  });
+
+  it("should provide IAM permissions to update and create rows in DynamoDB table", () => {
+    const hitCounter = createSut();
+
+    const dynamodbActionsCapture = new Capture();
+    hitCounter.hasResourceProperties(AwsResources.IAM.Policy, {
+      PolicyDocument: {
+        Statement: [
+          {
+            Effect: "Allow",
+            Action: dynamodbActionsCapture,
+          },
+        ],
+      },
+    });
+
+    expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:PutItem");
+    expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:UpdateItem");
   });
 
   it("should provide a Lambda Function with correct ENV VARS", () => {

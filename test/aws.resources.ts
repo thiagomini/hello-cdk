@@ -14,4 +14,7 @@ export const AwsResources = {
   DynamoDB: {
     Table: "AWS::DynamoDB::Table",
   },
+  IAM: {
+    Policy: "AWS::IAM::Policy",
+  },
 };
