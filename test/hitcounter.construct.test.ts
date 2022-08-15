@@ -18,20 +18,19 @@ describe("HitCounterConstruct", () => {
   it("should provide IAM permissions to update and create rows in DynamoDB table", () => {
     const hitCounter = createSut();
 
-    const dynamodbActionsCapture = new Capture();
     hitCounter.hasResourceProperties(AwsResources.IAM.Policy, {
       PolicyDocument: {
         Statement: Match.arrayWith([
           Match.objectLike({
             Effect: "Allow",
-            Action: dynamodbActionsCapture,
+            Action: Match.arrayWith([
+              "dynamodb:PutItem",
+              "dynamodb:UpdateItem",
+            ]),
           }),
         ]),
       },
     });
-
-    expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:PutItem");
-    expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:UpdateItem");
   });
 
   it("should provide IAM permissions to call inner lambda function", () => {
