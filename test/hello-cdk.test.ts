@@ -1,5 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import { Template } from "aws-cdk-lib/assertions";
+import { AwsResources } from "./aws.resources";
 import * as HelloCdk from "../lib/hello-cdk-stack";
 
 // example test. To run these tests, uncomment this file along with the
@@ -7,7 +8,7 @@ import * as HelloCdk from "../lib/hello-cdk-stack";
 test("SQS Queue Created", () => {
   const template = createSut();
 
-  template.hasResourceProperties("AWS::SQS::Queue", {
+  template.hasResourceProperties(AwsResources.SQS.Queue, {
     VisibilityTimeout: 300,
   });
 });
@@ -15,7 +16,7 @@ test("SQS Queue Created", () => {
 test("S3 Bucket Created", () => {
   const template = createSut();
 
-  template.hasResource("AWS::S3::Bucket", {
+  template.hasResource(AwsResources.S3.Bucket, {
     DeletionPolicy: "Delete",
     UpdateReplacePolicy: "Delete",
     Properties: {
