@@ -9,15 +9,16 @@ export interface HitCounterProps {
 }
 
 export class HitCounter extends Construct {
-  public readonly handler: lambda.Function;
+  public readonly counterFunctionHandler: lambda.Function;
+  public readonly hitCounterTable: dynamodb.Table;
 
   constructor(scope: Construct, id: string, props: HitCounterProps) {
     super(scope, id);
 
-    const table = this.createDynamoDBTable();
-    this.handler = this.createHitCounterLambda(props, table);
-    table.grantReadWriteData(this.handler);
-    props.downstream.grantInvoke(this.handler);
+    this.hitCounterTable = this.createDynamoDBTable();
+    this.counterFunctionHandler = this.createHitCounterLambda(props);
+    this.hitCounterTable.grantReadWriteData(this.counterFunctionHandler);
+    props.downstream.grantInvoke(this.counterFunctionHandler);
   }
 
   private createDynamoDBTable(): dynamodb.Table {
@@ -27,10 +28,7 @@ export class HitCounter extends Construct {
     });
   }
 
-  private createHitCounterLambda(
-    props: HitCounterProps,
-    dynamodbTable: dynamodb.Table
-  ): lambda.Function {
+  private createHitCounterLambda(props: HitCounterProps): lambda.Function {
     return new lambda.Function(this, "HitCounterHandler", {
       runtime: lambda.Runtime.NODEJS_16_X,
       handler: "hitcounter.handler",
@@ -41,7 +39,7 @@ export class HitCounter extends Construct {
           https://cdkworkshop.com/20-typescript/40-hit-counter/300-resources.html#late-bound-values
         */
         DOWNSTREAM_FUNCTION_NAME: props.downstream.functionName,
-        HITS_TABLE_NAME: dynamodbTable.tableName,
+        HITS_TABLE_NAME: this.hitCounterTable.tableName,
       },
     });
   }
