@@ -8,4 +8,7 @@ export const AwsResources = {
   Lambda: {
     Function: "AWS::Lambda::Function",
   },
+  ApiGateway: {
+    RestApi: "AWS::ApiGateway::RestApi",
+  },
 };

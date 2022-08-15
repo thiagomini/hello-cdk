@@ -11,6 +11,12 @@ describe("CdkWorkshopStack", () => {
       Runtime: "nodejs16.x",
     });
   });
+
+  it("should provide a REST API Gateway", () => {
+    const template = createSut();
+
+    template.resourceCountIs(AwsResources.ApiGateway.RestApi, 1);
+  });
 });
 
 const createSut = (): Template => {
