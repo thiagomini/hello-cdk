@@ -11,4 +11,7 @@ export const AwsResources = {
   ApiGateway: {
     RestApi: "AWS::ApiGateway::RestApi",
   },
+  DynamoDB: {
+    Table: "AWS::DynamoDB::Table",
+  },
 };
