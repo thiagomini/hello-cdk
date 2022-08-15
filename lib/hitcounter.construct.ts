@@ -17,6 +17,7 @@ export class HitCounter extends Construct {
     const table = this.createDynamoDBTable();
     this.handler = this.createHitCounterLambda(props, table);
     table.grantReadWriteData(this.handler);
+    props.downstream.grantInvoke(this.handler);
   }
 
   private createDynamoDBTable(): dynamodb.Table {

@@ -21,17 +21,32 @@ describe("HitCounterConstruct", () => {
     const dynamodbActionsCapture = new Capture();
     hitCounter.hasResourceProperties(AwsResources.IAM.Policy, {
       PolicyDocument: {
-        Statement: [
-          {
+        Statement: Match.arrayWith([
+          Match.objectLike({
             Effect: "Allow",
             Action: dynamodbActionsCapture,
-          },
-        ],
+          }),
+        ]),
       },
     });
 
     expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:PutItem");
     expect(dynamodbActionsCapture.asArray()).toContain("dynamodb:UpdateItem");
+  });
+
+  it("should provide IAM permissions to call inner lambda function", () => {
+    const hitCounter = createSut();
+
+    hitCounter.hasResourceProperties(AwsResources.IAM.Policy, {
+      PolicyDocument: {
+        Statement: Match.arrayWith([
+          Match.objectLike({
+            Effect: "Allow",
+            Action: "lambda:InvokeFunction",
+          }),
+        ]),
+      },
+    });
   });
 
   it("should provide a Lambda Function with correct ENV VARS", () => {
