@@ -63,7 +63,8 @@ const createSut = (): Template => {
     runtime: lambda.Runtime.NODEJS_16_X,
     handler: "hello.handler",
   });
-  const construct = new HitCounter(stack, "TestConstruct", {
+
+  new HitCounter(stack, "TestConstruct", {
     downstream: lambdaStub,
   });
 
