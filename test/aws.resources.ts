@@ -5,4 +5,7 @@ export const AwsResources = {
   S3: {
     Bucket: "AWS::S3::Bucket",
   },
+  Lambda: {
+    Function: "AWS::Lambda::Function",
+  },
 };
