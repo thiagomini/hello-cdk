@@ -1,6 +1,6 @@
 import * as cdk from "aws-cdk-lib";
 import * as cw from "aws-cdk-lib/aws-cloudwatch";
-import { Template } from "aws-cdk-lib/assertions";
+import { Match, Template } from "aws-cdk-lib/assertions";
 import {
   QueueWithAlarm,
   QueueWithAlarmProps,
@@ -19,7 +19,7 @@ describe("QueueWithAlarm", () => {
     });
   });
 
-  it("should provide a CloudWatch Alarm with correct values", () => {
+  it("should provide a CloudWatch Alarm with correct values when a threshold is provided", () => {
     const sut = createSut({
       messagesNotVisibleThreshold: 50,
     });
@@ -27,6 +27,16 @@ describe("QueueWithAlarm", () => {
     sut.hasResourceProperties(AwsResources.CloudWatch.Alarm, {
       ComparisonOperator: cw.ComparisonOperator.GREATER_THAN_THRESHOLD,
       Threshold: 50,
+      EvaluationPeriods: Duration.minutes(1).toSeconds(),
+    });
+  });
+
+  it("should provide a CloudWatch Alarm with correct values when no threshold is provided", () => {
+    const sut = createSut();
+
+    sut.hasResourceProperties(AwsResources.CloudWatch.Alarm, {
+      ComparisonOperator: cw.ComparisonOperator.GREATER_THAN_THRESHOLD,
+      Threshold: Match.anyValue(),
       EvaluationPeriods: Duration.minutes(1).toSeconds(),
     });
   });
