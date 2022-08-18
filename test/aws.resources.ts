@@ -17,4 +17,7 @@ export const AwsResources = {
   IAM: {
     Policy: "AWS::IAM::Policy",
   },
+  CloudWatch: {
+    Alarm: "AWS::CloudWatch::Alarm",
+  },
 };
