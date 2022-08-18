@@ -19,6 +19,12 @@ describe("QueueWithAlarm", () => {
     });
   });
 
+  it("should provide an SQS Queue when no name was given", () => {
+    const sut = createSut();
+
+    sut.resourceCountIs(AwsResources.SQS.Queue, 1);
+  });
+
   it("should provide a CloudWatch Alarm with correct values when a threshold is provided", () => {
     const sut = createSut({
       messagesNotVisibleThreshold: 50,
