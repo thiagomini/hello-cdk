@@ -16,19 +16,33 @@ export class QueueWithAlarm extends Construct {
   constructor(scope: Construct, id: string, props: QueueWithAlarmProps) {
     super(scope, id);
 
-    const queue = new sqs.Queue(this, "Queue", {
-      queueName: props.name,
-    });
+    const queue = this.createQueueWithName(props.name);
+    this.createAlarmForQueue(queue, props.messagesNotVisibleThreshold);
+  }
 
-    const metric = queue.metricApproximateNumberOfMessagesNotVisible({
-      label: "Messages Visible (Approx)",
-      period: Duration.minutes(5),
+  private createQueueWithName(name?: string) {
+    return new sqs.Queue(this, "Queue", {
+      queueName: name,
     });
+  }
+
+  private createAlarmForQueue(
+    queue: sqs.Queue,
+    messagesNotVisibleThreshold?: number
+  ): void {
+    const metric = this.createMetricForQueue(queue);
 
     metric.createAlarm(this, "TooManyMessagesAlarm", {
       comparisonOperator: cw.ComparisonOperator.GREATER_THAN_THRESHOLD,
-      threshold: props.messagesNotVisibleThreshold ?? 100,
+      threshold: messagesNotVisibleThreshold ?? 100,
       evaluationPeriods: Duration.minutes(1).toSeconds(),
+    });
+  }
+
+  private createMetricForQueue(queue: sqs.Queue): cw.Metric {
+    return queue.metricApproximateNumberOfMessagesNotVisible({
+      label: "Messages Visible (Approx)",
+      period: Duration.minutes(5),
     });
   }
 }
