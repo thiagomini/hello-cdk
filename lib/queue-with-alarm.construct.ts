@@ -2,7 +2,7 @@ import { Construct } from "constructs";
 import * as sqs from "aws-cdk-lib/aws-sqs";
 
 export interface QueueWithAlarmProps {
-  name: string;
+  name?: string;
 }
 
 export class QueueWithAlarm extends Construct {
